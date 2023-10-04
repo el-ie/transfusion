@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+
+# postgres_service:
+#     hostname: postgres
+#     image: postgres_image
+#     container_name: postgres_container
+#     build:
+#       context: ./requirements/postgres
+#       dockerfile: Dockerfile
+#     environment:
+#       - POSTGRES_USER=myuser
+#       - POSTGRES_PASSWORD=mypassword
+#       - POSTGRES_DB=trans-db
+#     volumes:
+#       - postgres_volume:/var/lib/postgresql
+#     networks:
+#       - trans_network
+#     healthcheck:
+#       test: ["CMD-SHELL", pg_isready -d trans-db -U myuser]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 10
+
+  postgres_service:
+      image: postgres:13
+      container_name: postgres_container
+      #build:
+      #  context: ./requirements/postgres
+      #  dockerfile: Dockerfile
+      #ports:
+      #  - 5434:5432
+      environment:
+        POSTFRES_USER: myuser
+        POSTGRES_PASSWORD: mypass
+        POSTGRES_DB: mydb
+      networks:
+        - trans_network
+
+
+  nestjs_service:
+      hostname: nestjs
+      image: nestjs_image
+      container_name: nestjs_container
+      build:
+        context: ./requirements/nestjs
+        dockerfile: Dockerfile
+      environment:
+        - POSTGRES_USER=myuser
+        - POSTGRES_PASSWORD=mypass
+        - POSTGRES_PORT=5432
+        - POSTGRES_DB=mydb
+      ports:
+        - '4000:3000'
+        - '4001:3001'
+        - '5555:6666'
+      volumes:
+        - ./requirements/nestjs/app:/app
+      networks:
+        - trans_network
+
+ #react_service:
+ #    hostname: react
+ #    build:
+ #      context: ./requirements/react
+ #      dockerfile: Dockerfile
+ #    image: react_image
+ #    container_name: react_container
+ #    ports:
+ #      - '4000:3000'
+ #    volumes:
+ #      - ./requirements/react/app:/app
+ #    networks:
+ #      - trans_network
+
+networks:
+  trans_network:
+    driver: bridge
+
+      #volumes:
+
+  # nest_volume:
+  #   device: ./requirements/nestjs/app
+  # react_volume:
+  #   device: ./requirements/react/app
