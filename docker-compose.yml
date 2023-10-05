@@ -54,7 +54,7 @@ services:
       ports:
         - '4000:3000'
         - '4001:3001'
-        - '5555:6666'
+        - '5555:5555'
       volumes:
         - ./requirements/nestjs/app:/app
       networks:
