@@ -14,14 +14,14 @@ export class AuthController{
     //console.log(req);
     console.log( {dto} );
 
-    return this.authService.signup();
+    return this.authService.signup(dto);
     //return 'I AM SIGNED UPPP';
   }
 
   @Post('signup_other')
   signup_other(@Body('email') email: string, @Body('password') password: string ) {
   console.log("On recupere email [" + email + "] et password [" + password + "]");
-    return this.authService.signup();
+    return 'Hello ceci est exemple de comment faire sans dto';
   }
 
   @Post('signin')
