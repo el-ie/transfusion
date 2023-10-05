@@ -18,6 +18,12 @@ export class AuthController{
     //return 'I AM SIGNED UPPP';
   }
 
+  @Post('signup_other')
+  signup_other(@Body('email') email: string, @Body('password') password: string ) {
+  console.log("On recupere email [" + email + "] et password [" + password + "]");
+    return this.authService.signup();
+  }
+
   @Post('signin')
   signin() {
 
