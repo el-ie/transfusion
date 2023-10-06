@@ -66,7 +66,7 @@ export class AuthService {
 			throw new ForbiddenException('Credentials incorrect');
 
 		delete user.hash;
-
+		console.log('LOGIN SUCESSFULL');
 		return user;
 	}
 }
