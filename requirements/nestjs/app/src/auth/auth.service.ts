@@ -14,11 +14,19 @@ import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService } from '@nestjs/config';
 
+import { FortyTwoStrategy } from './strategy/42.strategy';
+
 @Injectable()
 export class AuthService {
-	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
+	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService, private fourtytwo: FortyTwoStrategy) {}
 
-	///////////////////////////////////////////
+	///////////////////test////////////////////////
+	//async fourtyup(dto: AuthDto) {
+	//	this.fourtytwo.hellofrom();
+	//	return 'test';
+	//}
+	//////////////////////////////////////////
+
 	async signup(dto: AuthDto) {
 
 		const hash = await argon.hash(dto.password);	
