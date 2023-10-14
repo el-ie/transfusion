@@ -25,9 +25,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
 
 	  //var test = await this.authService.validateUserByFortyTwo(profile);
 	  console.log('-----------------');
-	  console.log(profile.name);
+	  //console.log(profile.name);
 	  //   return done(null, user);
-	  console.log('APPEL fonction validate');
+	  console.log('APPEL fonction validate : ', profile.name);
 	  return 'random text';
   }
 }

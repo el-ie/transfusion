@@ -20,12 +20,40 @@ import { FortyTwoStrategy } from './strategy/42.strategy';
 export class AuthService {
 	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService, private fourtytwo: FortyTwoStrategy) {}
 
-	///////////////////test////////////////////////
-	//async fourtyup(dto: AuthDto) {
-	//	this.fourtytwo.hellofrom();
-	//	return 'test';
-	//}
-	//////////////////////////////////////////
+
+	///////////////////// TEST JWT TOKEN ////////////////
+
+	async testGetToken(str: string = 'lala') : Promise< {access_token: string} >{
+
+		const payload = {
+			test: str
+		};
+
+		const secret = this.config.get('JWT_SECRET');
+
+		//const token = await this.jwt.signAsync(payload, { expiresIn: '15m', secret: secret });
+		const token = await this.jwt.signAsync(payload, { secret: secret });
+
+		return { access_token: token };
+	}
+
+	async testValidateToken(token_to_test) {
+
+		const secret = this.config.get('JWT_SECRET');
+
+		try {
+			const decoded = await this.jwt.verifyAsync(token_to_test.access_token, { secret: secret } );
+			console.log(decoded);
+			return true;
+		} catch (err) {
+			console.log('test token: Token invalide');
+			console.log(err);
+			return false;
+		}
+
+	}	
+
+	////////////////////  END TEST  /////////////////////
 
 	async signup(dto: AuthDto) {
 
