@@ -21,6 +21,7 @@ export class AuthService {
 	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService, private fourtytwo: FortyTwoStrategy) {}
 
 
+	/////////////////////////////////////////////////////
 	///////////////////// TEST JWT TOKEN ////////////////
 
 	async testGetToken(str: string = 'lala') : Promise< {access_token: string} >{
@@ -54,50 +55,61 @@ export class AuthService {
 	}	
 
 	////////////////////  END TEST  /////////////////////
+	/////////////////////////////////////////////////////
 
-	async signup(dto: AuthDto) {
+	/////////////////////////////////////////////////////
+	///////////////// TEST COMPLETE AUTH  ///////////////
 
-		const hash = await argon.hash(dto.password);	
 
-		//save the new user in the db
-		try {
-			const user =  await this.prisma.user.create({ data: { email: dto.email, hash, }, });
-			return this.signToken(user.id, user.email);
+	//////////////// END  TEST COMPLETE AUTH  ///////////
+	/////////////////////////////////////////////////////
 
-		} catch(error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError) {
-				if (error.code === 'P2002') {
-					throw new ForbiddenException('Credentials taken');
-				}
-			}
-			throw error;
-		}
-	}
+	//SIGNUP WORKING WITH old prisma.scheme
+
+	//async signup(dto: AuthDto) {
+	//
+	//	const hash = await argon.hash(dto.password);	
+	//
+	//	//save the new user in the db
+	//	try {
+	//		const user =  await this.prisma.user.create({ data: { email: dto.email, hash, }, });
+	//		return this.signToken(user.id, user.email);
+	//
+	//	} catch(error) {
+	//		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+	//			if (error.code === 'P2002') {
+	//				throw new ForbiddenException('Credentials taken');
+	//			}
+	//		}
+	//		throw error;
+	//	}
+	//}
 	// select allow choosing what to send back //select: { id: true, email: true, createdAt: true, }, //delete user.hash; //eviter de renvoyer le hash dans la requete de reponse a post
 	/////////////////////////////////////
 
 
-	async signin(dto: AuthDto) {
-
-		//find user by email
-		const user = await this.prisma.user.findUnique( { where: { email: dto.email } });
-
-		//iff user dont exist throw exception
-		if (!user)
-			throw new ForbiddenException('Credentials incorrect');
-
-		//compare password
-		const pwMatches = await argon.verify(user.hash, dto.password);
-
-		//iff incorrect throw exception
-		if (!pwMatches)
-			throw new ForbiddenException('Credentials incorrect');
-
-		//delete user.hash
-		console.log('LOGIN SUCESSFULL');
-		return this.signToken(user.id, user.email);
-
-	}
+	//SIGNING WORKING WITH OLD prisma.schema
+	//async signin(dto: AuthDto) {
+	//
+	//	//find user by email
+	//	const user = await this.prisma.user.findUnique( { where: { email: dto.email } });
+	//
+	//	//iff user dont exist throw exception
+	//	if (!user)
+	//		throw new ForbiddenException('Credentials incorrect');
+	//
+	//	//compare password
+	//	const pwMatches = await argon.verify(user.hash, dto.password);
+	//
+	//	//iff incorrect throw exception
+	//	if (!pwMatches)
+	//		throw new ForbiddenException('Credentials incorrect');
+	//
+	//	//delete user.hash
+	//	console.log('LOGIN SUCESSFULL');
+	//	return this.signToken(user.id, user.email);
+	//
+	//}
 
 	async signToken(userId: number, email: string) : Promise< {access_token: string} >{
 
