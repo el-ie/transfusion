@@ -14,6 +14,7 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
-  name String
-  age Int
+  email String @default("default@gmail.com") 
+  username String @unique
+  age Int @default(142)
 }

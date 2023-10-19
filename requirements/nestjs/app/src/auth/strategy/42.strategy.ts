@@ -25,22 +25,40 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 
   async validate(accessToken: string, refreshToken: string, profile, cb: Function) {
 
-	  //var test = await this.authService.validateUserByFortyTwo(profile);
 	  console.log('-----------------');
-	  //console.log(profile.name);
-	  //   return done(null, user);
+	  //console.log(profile);
+	  // return done(null, user);
 	  console.log('APPEL fonction validate : ', profile.name);
 
-	  const all = await this.prisma.user.findMany();
-	  console.log('---------------');
-	  console.log(' VOICI LA LISTE DES User :')
-	  console.log(all);
+	  //const all = await this.prisma.user.findMany();
+	  //console.log('---------------');
+	  //console.log(' VOICI LA LISTE DES User :')
+	  //console.log(all);
 	  //console.dir(all, { depth: null })
-	  console.log('---------------');
+	  //console.log('---------------');
 
+	  const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
 
+	  if (!user) {
+		  console.log('the user ', profile.username, ' dont exist');
+		  console.log(' ----- user creation in process -----');
 
-	  
+		  const user = await this.prisma.user.create({
+			data: {
+				username: profile.username,
+				email: profile.emails[0].value,
+			},
+		  });
+
+		  console.log(' ----- user successfully created -----');
+		  return 'USER SUCCESFULLY CREATED';
+
+	  }
+	  else {
+		  console.log(' the user ', profile.username, ' already exist :');
+		  console.dir(user, { depth: null })
+		  return 'USER ALREADY IN DATABASE';
+	  }
 
 	  return 'random text';
   }
