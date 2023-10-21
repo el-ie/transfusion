@@ -52,7 +52,6 @@ services:
         - POSTGRES_PORT=5432
         - POSTGRES_DB=mydb
       ports:
-        - '3000:3000'
         - '3001:3001'
         - '5555:5555'
       volumes:
@@ -60,19 +59,19 @@ services:
       networks:
         - trans_network
 
- #react_service:
- #    hostname: react
- #    build:
- #      context: ./requirements/react
- #      dockerfile: Dockerfile
- #    image: react_image
- #    container_name: react_container
- #    ports:
- #      - '4000:3000'
- #    volumes:
- #      - ./requirements/react/app:/app
- #    networks:
- #      - trans_network
+  react_service:
+      hostname: react
+      build:
+        context: ./requirements/react
+        dockerfile: Dockerfile
+      image: react_image
+      container_name: react_container
+      ports:
+        - '3000:3000'
+      volumes:
+        - ./requirements/react/app:/app
+      networks:
+        - trans_network
 
 networks:
   trans_network:
