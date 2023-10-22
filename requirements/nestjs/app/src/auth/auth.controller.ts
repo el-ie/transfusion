@@ -97,7 +97,7 @@ export class AuthController{
 
 		//return response.send();//options?
 
-		response.redirect('/');
+		response.redirect('http://localhost:3000/homepage');
 
 		// A METTRE EN PLACE APRES L ACTIVATION DE REACT ROUTER DOM :
 		//response.redirect('http://localhost:3000/homepage');

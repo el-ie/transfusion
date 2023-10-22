@@ -7,6 +7,7 @@ import LoginForm from './components/LoginForm/LoginForm';
 import TestAxios from './components/ENTRAINEMENT/TestAxios/TestAxios';
 
 import { Route, Routes, Link } from 'react-router-dom';
+import HomePage from './components/HomePage/Homepage';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
 
 			<Routes>
 			  <Route path="/login" element={<LoginForm/>} />
+			  <Route path="/homepage" element={<HomePage/>} />
 			</Routes>
 
 			</>
