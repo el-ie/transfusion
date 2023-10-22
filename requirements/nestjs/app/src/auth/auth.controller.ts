@@ -91,8 +91,7 @@ export class AuthController{
 		console.log('controller: callback');
 
 		const token = await this.authService.testGetToken('test');
-
-		//console.log('@Get[get_token_cookie] -> [', token, ']');
+		console.log('@Get[get_token_cookie] -> [', token, ']');
 
 		response.cookie('AUTH_TOKEN', token, { httpOnly: true });
 

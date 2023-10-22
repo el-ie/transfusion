@@ -1,5 +1,7 @@
 import React from "react";
 
+import axios from 'axios';
+
 export default class LoginForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -25,9 +27,12 @@ export default class LoginForm extends React.Component {
 		event.preventDefault();
 	}
 
-	handleSignup() {
-		alert('okkk');
-	}
+	async handleSignup() {
+			//const response = await axios.get('http://localhost:3001');
+			//console.log(response.data);
+		window.location.href = 'http://localhost:3001/auth/login42';
+
+	};
 
 	render() {
 		return (
@@ -46,6 +51,7 @@ export default class LoginForm extends React.Component {
 			<input type="submit" value="Login" style={{ padding: '3px 25px', borderRadius: '4px',  display:'flex'}}/>
 			</form>
 			<button onClick={this.handleSignup} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-86px' }}>  Signup  </button>
+
 
 			</div>
 		);
