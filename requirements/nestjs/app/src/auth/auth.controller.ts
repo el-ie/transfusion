@@ -96,8 +96,11 @@ export class AuthController{
 		response.cookie('AUTH_TOKEN', token, { httpOnly: true });
 
 		//return response.send();//options?
+
 		response.redirect('/');
-		//return 'api callback effectue';
+
+		// A METTRE EN PLACE APRES L ACTIVATION DE REACT ROUTER DOM :
+		//response.redirect('http://localhost:3000/homepage');
 	}
 
 	/////////////////// END CALL API ////////////////////
