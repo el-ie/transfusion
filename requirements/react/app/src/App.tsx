@@ -4,19 +4,32 @@ import './App.css';
 
 import LoginForm from './components/LoginForm/LoginForm';
 
-import TestAxios from './components/TestAxios/TestAxios';
+import TestAxios from './components/ENTRAINEMENT/TestAxios/TestAxios';
+
+import { Route, Routes, Link } from 'react-router-dom';
 
 function App() {
 
 
 	return (
+			<>
+
+			<nav>
+			  <ul>
+		    	<li>
+		          <Link to="/login">Login</Link>
+		    	</li>
+		      </ul>
+			</nav>
+
 			<div className="App">
-			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-			{/* <TestAxios/> */}
-
-			<LoginForm/>
-
 			</div>
+
+			<Routes>
+			  <Route path="/login" element={<LoginForm/>} />
+			</Routes>
+
+			</>
 		   );
 }
 
