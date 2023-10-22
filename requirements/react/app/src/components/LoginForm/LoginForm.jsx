@@ -36,7 +36,12 @@ export default class LoginForm extends React.Component {
 
 	render() {
 		return (
+
+			<>
+
+			<br /><br /><br /><br /><br /><br /><br /><br />
 			<div style={{ textAlign: 'center' }}>
+
 			<form onSubmit={this.handleSubmit} style={{ display: 'inline-block' }}>
 			<label>
 			Login: <br/>
@@ -54,6 +59,9 @@ export default class LoginForm extends React.Component {
 
 
 			</div>
+
+			</>
+
 		);
 	}
 }
