@@ -11,6 +11,8 @@ npm install
 #npx prisma db push
 #npx prisma db seed
 
+npx prisma migrate dev
+
 # # Run prisma studio
 # npx prisma studio
 
