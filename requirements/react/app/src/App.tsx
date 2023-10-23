@@ -7,7 +7,7 @@ import LoginForm from './components/LoginForm/LoginForm';
 import TestAxios from './components/ENTRAINEMENT/TestAxios/TestAxios';
 
 import { Route, Routes, Link } from 'react-router-dom';
-import HomePage from './components/HomePage/Homepage';
+import HomePage from './components/HomePage/HomePage';
 
 function App() {
 
