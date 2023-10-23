@@ -42,7 +42,9 @@ export class AuthController{
 
 		const token = await this.authService.testGetToken('test');
 		//console.log('@Get[get_token_cookie] -> [', token, ']');
-		response.cookie('AUTH_TOKEN', token, { httpOnly: true });
+
+		response.cookie('AUTH_TOKEN', token, { httpOnly: false });
+
 		return response.send();//options?
 	}
 
@@ -97,7 +99,7 @@ export class AuthController{
 		const token = await this.authService.testGetToken(req.user.username);
 		//console.log('@Get[get_token_cookie] -> [', token, ']');
 
-		response.cookie('AUTH_TOKEN', token, { httpOnly: true });
+		response.cookie('AUTH_TOKEN', token, { httpOnly: false });
 
 		//return response.send();//options?
 
