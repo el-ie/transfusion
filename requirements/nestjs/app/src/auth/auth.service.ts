@@ -24,10 +24,10 @@ export class AuthService {
 	/////////////////////////////////////////////////////
 	///////////////////// TEST JWT TOKEN ////////////////
 
-	async testGetToken(str: string = 'lala') : Promise< {access_token: string} >{
+	async testGetToken(username: string) : Promise< {access_token: string} >{
 
 		const payload = {
-			test: str
+			username: username
 		};
 
 		const secret = this.config.get('JWT_SECRET');

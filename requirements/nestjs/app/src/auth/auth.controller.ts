@@ -88,10 +88,14 @@ export class AuthController{
 	@Get('42/callback')
 	@UseGuards(AuthGuard('42strat'))
 	async bar(@Req() req, @Res() response) {
-		console.log('controller: callback');
 
-		const token = await this.authService.testGetToken('test');
-		console.log('@Get[get_token_cookie] -> [', token, ']');
+		console.log('controller: callback');
+		console.log('ICI [', req.user.username, ']');
+
+
+		// creation du tokenJWT avec le username, est ce une bonne pratique ?
+		const token = await this.authService.testGetToken(req.user.username);
+		//console.log('@Get[get_token_cookie] -> [', token, ']');
 
 		response.cookie('AUTH_TOKEN', token, { httpOnly: true });
 

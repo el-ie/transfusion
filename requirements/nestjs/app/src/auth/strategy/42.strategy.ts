@@ -57,7 +57,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 	  else {
 		  console.log(' the user ', profile.username, ' already exist :');
 		  console.dir(user, { depth: null })
-		  return 'USER ALREADY IN DATABASE';
+
+		  return { username: profile.username, user };
+		  //return 'USER ALREADY IN DATABASE';
 	  }
 
 	  return 'random text';
