@@ -9,11 +9,16 @@ import { JwtStrategy } from './strategy';
 import { FortyTwoStrategy } from './strategy/42.strategy';
 //import { PassportModule } from '@nestjs/passport';
 
+import { UserModule } from "src/user/user.module";
+import { PrismaService } from "src/prisma/prisma.service";
+import { UserService } from "src/user/user.service";
+
 @Module({
-	imports: [JwtModule.register({})],
+	imports: [JwtModule.register({}), UserModule],
 	//imports: [PassportModule.register({ defaultStrategy: '42' }), JwtModule.register({})], //useless ?
 	controllers: [AuthController],
-	providers: [AuthService, JwtStrategy, FortyTwoStrategy],
+	// je rajoute PrismaService dans provider mais bizarre que ca marche sans
+	providers: [AuthService, JwtStrategy, FortyTwoStrategy, PrismaService, UserService],
 	exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
