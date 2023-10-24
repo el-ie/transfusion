@@ -1,73 +1,33 @@
+import React, { useState, useEffect } from 'react';
 
-import React from "react";
-
-import { Jwt } from "jsonwebtoken";
-
-import { useCookies } from "react-cookie";
-import { useState } from "react";
-
-import Cookies from "js-cookie";
-
-import jwtDecode from "jwt-decode";
+import axios from 'axios';
 
 export default function HomePage() {
 
-	// recuperation du cookie //
-let coco = Cookies.get('AUTH_TOKEN');	
+	const [data, setData] = useState('');
 
-if (!coco)
-	return (<> </>);
+	axios.get('http://localhost:3001/request/get_all', { withCredentials: true })
+	.then( (response) => {
+			//setUsername(JSON.stringify(response.data));
+			//let tmp = JSON.stringify(response.data, null, 2);
+			//console.log(tmp);
 
-	// extraction du code JWT depuis le cookie //
-const regex = /"(.*?)"/g;
-let matches = [];
-let match;
+			setData(response.data);
+			//console.log(response.data.email);
+		})
+	.catch( (error) => {
+			console.log('erreur lors de la recuperation des donnees : ', error);
+			} );
 
-let raw_jwt : string = "";
-while ((match = regex.exec(coco)) !== null) {
-	matches.push(match[1]);
+	return ( <div style={{textAlign: 'center'}}>
+			<h1> Bienvenue sur transcendance </h1>
+			<h2 style={{textAlign: 'left', position: 'relative', left: '300px', color: 'green'}}> Authentification reussie </h2>
+			<br/><br/><br/>
+			<div style={{ textAlign: 'left', position: 'relative', left: '300px' }}>
+			<h1> Informations utilisateur :  </h1>
+			<pre> <h1> [{JSON.stringify(data, null, 2)}] </h1> </pre>
+			<pre> <h1> {} </h1> </pre>
+			</div>
+
+			</div> );
 }
-if (matches.length == 2) {
-	raw_jwt = matches[1];
-
-} else {
-	console.log("Pas trouvé");
-}
-
-console.log('ON A : jwt [', raw_jwt, ']');
-
-	// decodage du token jwt // attention les parametres de decoded seront different !
-var decoded: { username: string, iat: number };
-
-decoded = jwtDecode(raw_jwt);
-
-	// token jwt decode //
-console.log(decoded);
-
-return (
-		<div style={{ textAlign: 'center' }}>
-		<h1> Bienvenue {decoded.username} </h1>
-		</div>
-	   );
-}
-
-//const [cookies] = useCookies();
-
-//	function getCookie(name: string): string | null {
-//    const value = `; ${document.cookie}`;
-//	return value;
-//    const parts = value.split(`; ${name}=`);
-//    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-//    return null;
-//}
-//
-//const myCookie: string | null = getCookie('AUTH_TOKEN');
-//
-//	console.log("%c voiture", "color:red");
-
-//let value = getCookie('AUTH_TOKEN');
-
-//let value = document.cookie;
-
-//console.log(value);
-//console.dir(myCookie, { depth: null })

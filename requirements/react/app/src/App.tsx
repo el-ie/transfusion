@@ -4,8 +4,6 @@ import './App.css';
 
 import LoginForm from './components/LoginForm/LoginForm';
 
-import TestAxios from './components/ENTRAINEMENT/TestAxios/TestAxios';
-
 import { Route, Routes, Link } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 
@@ -23,7 +21,7 @@ function App() {
 		          <Link to="/login">Login</Link>
 		    	</li>
 		    	<li>
-		          <Link to="/testaxios">test axios</Link>
+		          <Link to="/homepage">homepage</Link>
 		    	</li>
 		      </ul>
 			</nav>
@@ -32,10 +30,9 @@ function App() {
 			</div>
 
 			<Routes>
-			  <Route path="/" element={<TrainAxios/>} />
+			  <Route path="/" element={<LoginForm/>} />
 			  <Route path="/login" element={<LoginForm/>} />
 			  <Route path="/homepage" element={<HomePage/>} />
-			  <Route path="/testaxios" element={<TrainAxios/>} />
 			</Routes>
 
 			</>
