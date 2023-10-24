@@ -14,5 +14,6 @@ import { FortyTwoStrategy } from './strategy/42.strategy';
 	//imports: [PassportModule.register({ defaultStrategy: '42' }), JwtModule.register({})], //useless ?
 	controllers: [AuthController],
 	providers: [AuthService, JwtStrategy, FortyTwoStrategy],
+	exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
