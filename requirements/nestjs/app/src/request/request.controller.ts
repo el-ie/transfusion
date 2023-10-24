@@ -9,20 +9,24 @@ export class RequestController {
   //route hyper simple pour petit test avec axios
  
  @UseGuards(AuthGuard('jwt'))
-  @Get('test_string')
-	test_basique(@Req() req) {
+  @Get('get_all')
+	get_all(@Req() req) {
 
 		return req.user;
 	}
 
-  @UseGuards(AuthGuard('jwt'))
-  @Get('test_more')
-	test_more(@Req() req) {
-		//return req.user;
-		console.log('TYPE OF REQ USER = ', typeof(req.user));
+ @UseGuards(AuthGuard('jwt'))
+  @Get('get_username')
+	get_username(@Req() req) {
 
-		//return req.user;
-		return { testnom: 'bobby' };
+		return req.user.username;
+	}
+
+ @UseGuards(AuthGuard('jwt'))
+  @Get('get_id')
+	get_id(@Req() req) {
+
+		return req.user.id;
 	}
 
 
