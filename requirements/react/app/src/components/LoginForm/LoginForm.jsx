@@ -7,13 +7,9 @@ export default class LoginForm extends React.Component {
 		super(props);
 	}
 
-
-	async handleSignup() {
-
-		//const response = await axios.get('http://localhost:3001/auth/login42');
-		//console.log(response.data);
+	handleSignup() {
+		//let page = await axios.get('http://localhost:3001', { withCredentials: true });
 		window.location.href = 'http://localhost:3001/auth/login42';
-
 	};
 
 	render() {

@@ -7,7 +7,9 @@ import LoginForm from './components/LoginForm/LoginForm';
 import { Route, Routes, Link } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 
-import TrainAxios from './components/TrainAxios/TrainAxios';
+import RouteProtection from './components/Routing/RouteProtection';
+
+import Useless from './components/Useless/Useless';
 
 function App() {
 
@@ -30,9 +32,16 @@ function App() {
 			</div>
 
 			<Routes>
+			  <Route path="/useless" element={<Useless/>} />
+
 			  <Route path="/" element={<LoginForm/>} />
 			  <Route path="/login" element={<LoginForm/>} />
-			  <Route path="/homepage" element={<HomePage/>} />
+			  <Route path="/homepage" element={
+				  <RouteProtection>
+				  <HomePage/>
+				  </RouteProtection>
+			  } />
+	
 			</Routes>
 
 			</>

@@ -13,11 +13,41 @@ export class AuthController{
 	/////////////////////////////////////////////////////
 	//////////// TEST COMPLETE AUTHENTICATION ///////////
 
+	@Get('verification')
+	async verification(@Req() request: any) {
+
+		const token = request.cookies['AUTH_TOKEN'];
+		//console.log('@Get[check_cookie] -> [', token, ']');
+
+		if (!token)
+			return 'failure';
+
+			//throw new Error("[verification] Le cookie AUTH_TOKEN n est pas disponible.");
+
+		try {
+		const result = await this.authService.testValidateToken(token);
+
+		if (result != true)
+			throw new Error("[verification] result != true, testValidateToken a rate");
+			return 'succes';
+			//return '[verification] success, le cookie authentifie l utilisateur' ;
+		}
+		catch (err) {
+			//throw new Error("[verification] Erreur dans testValidateToken");
+			return 'failure';
+		}
+
+			//CALL API
+	}
+
 	@Get('authenticate')
 	async authenticate(@Req() request: any) {
 
 		const token = request.cookies['AUTH_TOKEN'];
 		//console.log('@Get[check_cookie] -> [', token, ']');
+
+		if (!token)
+			return 'FAILURE';
 
 		if (token)
 			{
@@ -27,8 +57,6 @@ export class AuthController{
 			}
 
 			//CALL API
-
-			return 'FAILURE';
 	}
 
 	//////////////////// END  TEST  /////////////////////
