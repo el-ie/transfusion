@@ -10,58 +10,42 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 
-  constructor(config: ConfigService, private prisma: PrismaService) {
-    super({
-    clientID: config.get('UID'),
-    clientSecret: config.get('SECRET'),
-    callbackURL: "http://localhost:3001/auth/42/callback"
-    });
-  }
+	constructor(config: ConfigService, private prisma: PrismaService) {
+		super({
+			clientID: config.get('UID'),
+			clientSecret: config.get('SECRET'),
+			callbackURL: "http://localhost:3001/auth/42/callback"
+		});
+	}
 
-  //hellofrom() {
-	 // console.log('HHHELLLLLOOOO');
-	 // return;
-  //}
+	async validate(accessToken: string, refreshToken: string, profile, cb: Function) {
 
-  async validate(accessToken: string, refreshToken: string, profile, cb: Function) {
+		console.log('-----------------');
+		console.log('APPEL fonction validate : ', profile.name);
 
-	  console.log('-----------------');
-	  //console.log(profile);
-	  // return done(null, user);
-	  console.log('APPEL fonction validate : ', profile.name);
+		const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
 
-	  //const all = await this.prisma.user.findMany();
-	  //console.log('---------------');
-	  //console.log(' VOICI LA LISTE DES User :')
-	  //console.log(all);
-	  //console.dir(all, { depth: null })
-	  //console.log('---------------');
+		if (!user) {
+			console.log('the user ', profile.username, ' dont exist');
+			console.log(' ----- user creation in process -----');
 
-	  const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
+			const user = await this.prisma.user.create({
+				data: {
+					username: profile.username,
+					email: profile.emails[0].value,
+				},
+			});
 
-	  if (!user) {
-		  console.log('the user ', profile.username, ' dont exist');
-		  console.log(' ----- user creation in process -----');
+			console.log(' ------ user successfully created -----');
+			return { username: profile.username, user };
 
-		  const user = await this.prisma.user.create({
-			data: {
-				username: profile.username,
-				email: profile.emails[0].value,
-			},
-		  });
+		}
+		else {
+			console.log(' the user ', profile.username, ' already exist :');
+			console.dir(user, { depth: null })
 
-		  console.log(' ------ user successfully created -----');
-		  return { username: profile.username, user };
-		  //return 'USER SUCCESFULLY CREATED';
+			return { username: profile.username, user };
+		}
 
-	  }
-	  else {
-		  console.log(' the user ', profile.username, ' already exist :');
-		  console.dir(user, { depth: null })
-
-		  return { username: profile.username, user };
-		  //return 'USER ALREADY IN DATABASE';
-	  }
-
-  }
+	}
 }
