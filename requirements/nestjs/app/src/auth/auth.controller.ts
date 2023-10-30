@@ -16,11 +16,11 @@ export class AuthController{
 			throw new HttpException('[auth.controller] [check_auth_token]: pas de AUTH_TOKEN', HttpStatus.UNAUTHORIZED);
 
 		try {
-			const result = await this.authService.testValidateToken(token);
+			await this.authService.testValidateToken(token);
 			return 'success';
 		}
 		catch (err) {
-				throw new HttpException('[auth.controller] [check_auth_token]: testValidateToken mauvais retour', HttpStatus.UNAUTHORIZED);
+			throw new HttpException('[auth.controller] [check_auth_token]: testValidateToken mauvais retour', HttpStatus.UNAUTHORIZED);
 		}
 	}
 
