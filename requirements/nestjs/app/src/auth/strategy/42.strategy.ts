@@ -50,8 +50,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 			},
 		  });
 
-		  console.log(' ----- user successfully created -----');
-		  return 'USER SUCCESFULLY CREATED';
+		  console.log(' ------ user successfully created -----');
+		  return { username: profile.username, user };
+		  //return 'USER SUCCESFULLY CREATED';
 
 	  }
 	  else {
@@ -62,6 +63,5 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 		  //return 'USER ALREADY IN DATABASE';
 	  }
 
-	  return 'random text';
   }
 }

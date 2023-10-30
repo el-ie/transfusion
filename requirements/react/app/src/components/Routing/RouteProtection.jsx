@@ -10,37 +10,34 @@ const RouteProtection = (props) => {
 
     useEffect(() => {
         const checkAuthentication = async () => {
+
             try {
                 const result = await axios.get('http://localhost:3001/auth/verification', { withCredentials: true });
-				console.log('=> axios.get ok   result [', result.data, ']');
+
 				if (result.data === 'succes')
 					setIsAuthenticated(true);
 				else
-					setIsAuthenticated(false);  // Optionnel : considère que l'utilisateur n'est pas authentifié en cas d'erreur
+					setIsAuthenticated(false);
             } catch (error) {
 				
-                console.error("Erreur lors de la vérification de l'authentification", error);
-
-                setIsAuthenticated(false);  // Optionnel : considère que l'utilisateur n'est pas authentifié en cas d'erreur
+                console.error("Error RouteProtection axios get ... auth/verification", error.response);
+                setIsAuthenticated(false);
             }
         };
 
         checkAuthentication();
 
-    }, []);  // Le tableau de dépendances vide signifie que cet effet ne sera exécuté qu'une fois, lorsque le composant est monté.
+    }, []);
 
     if (isAuthenticated === null) {
         return <p>Vérification en cours...</p>;  // Affiche un message pendant la vérification
     }
 
 	if (isAuthenticated)
-	{
-		console.log('RETURN is auth');
 		return props.children;
-	}
+
 	else
 	{
-		console.log('RETURN not auth');
 		return <Navigate to="/login" replace /> 
 		//return (
 		//	<div>

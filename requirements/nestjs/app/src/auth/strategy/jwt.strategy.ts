@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { Injectable, Req, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Req, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 
 
@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 				if (req.cookies.AUTH_TOKEN)
 					return req.cookies.AUTH_TOKEN.access_token;
 				else
-					throw new Error('JWT STRATEGY : cookie absent');
+					throw new HttpException('jwt strategy: pas de AUTH_TOKEN', HttpStatus.UNAUTHORIZED);
 			},
 			secretOrKey: config.get('JWT_SECRET'), 
 		}
@@ -26,20 +26,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
 		console.log('--- jwt callback ---');
 
-		console.log(payload);
-
 		if (!payload.username)
-			throw new Error('[validate] payload.username not found');
+					throw new HttpException('jwt strategy callback: pas username dans le token', HttpStatus.UNAUTHORIZED);
 
 		const utilisateur = await this.user.findOneByUsername(payload.username);
 
 		// checker cette verification
 		if (!utilisateur)
-			throw new Error('USER NOT IN DATABASE (validate)');
+					throw new HttpException('jwt strategy callback: l utilisateur n existe pas dans la database.', HttpStatus.UNAUTHORIZED);
 			// Remettre une bonne erreur //throw new UnauthorizedException();
-
-		console.log('utilisateur :');
-		console.log(utilisateur);
 
 		return utilisateur;
 	}
