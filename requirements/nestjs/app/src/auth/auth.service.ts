@@ -14,15 +14,20 @@ export class AuthService {
 
 		const payload = {
 			username: username
+			//ajouter des informations ?
 		};
 
 		const secret = this.config.get('JWT_SECRET');
 
 		//const token = await this.jwt.signAsync(payload, { expiresIn: '15m', secret: secret });
+		try {
+			const token = await this.jwt.signAsync(payload, { secret: secret });
+			return { access_token: token };
 
-		const token = await this.jwt.signAsync(payload, { secret: secret });
-
-		return { access_token: token };
+		} catch (err){
+				throw new HttpException('[auth.service] [generateJwt] : jwt.signAsync : error catched', HttpStatus.INTERNAL_SERVER_ERROR);
+				//est ce que signAsync peut throw une erreur
+		}
 	}
 
 	async testValidateToken(token_to_test) {
@@ -37,19 +42,5 @@ export class AuthService {
 		}
 
 	}	
-
-	async signToken(userId: number, email: string) : Promise< {access_token: string} >{
-
-		const payload = {
-			sub: userId,
-			email
-		};
-
-		const secret = this.config.get('JWT_SECRET');
-
-		const token = await this.jwt.signAsync(payload, { expiresIn: '15m', secret: secret });
-
-		return { access_token: token };
-	}
 
 }
