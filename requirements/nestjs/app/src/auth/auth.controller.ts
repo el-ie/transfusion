@@ -1,18 +1,12 @@
-import { Controller, Post, Get, Body, Req, UseGuards, Param, Res, HttpStatus, HttpException } from "@nestjs/common";
-
+import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-
-import { AuthDto } from './dto';
-
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController{
 	constructor(private authService: AuthService) {}
 
-	/////////////////////////////////////////////////////
-	//////////// TEST COMPLETE AUTHENTICATION ///////////
-
+	// Cette route est appelle par le module RouteProtection dans react avec axios pour proteger les routes dans le front
 	@Get('check_auth_token')
 	async verification(@Req() request: any) {
 
@@ -30,112 +24,44 @@ export class AuthController{
 		}
 	}
 
-	//////////////////// END  TEST  /////////////////////
-	/////////////////////////////////////////////////////
-
-	/////////////////////////////////////////////////////
-	////////////////// TEST JWT TOKEN ///////////////////
-
-	@Get('get_token_cookie')
-	async getTokenCookie(@Res() response) {
-
-		const token = await this.authService.testGetToken('test');
-		//console.log('@Get[get_token_cookie] -> [', token, ']');
-
-		response.cookie('AUTH_TOKEN', token, { httpOnly: false });
-
-		return response.send();//options?
-	}
-
-	@Get('check_cookie')
-	async doSomething(@Req() request: any) {
-
-		const token = request.cookies['AUTH_TOKEN'];
-		//console.log('@Get[check_cookie] -> [', token, ']');
-		if (!token)
-			return ("Le token n'etait pas disponible dans les cookies");
-
-		const result = await this.authService.testValidateToken(token);
-
-		return '[SUCCES] le token JWT du cookie authentifie l utilisateur';
-	}
-
-	//useless (testing purpose)
-	//@Get('get_raw_token')
-	//async testGetToken() {
-	//	const token = await this.authService.testGetToken('test');
-	//	console.log('@Get[get_raw_token] -> [', token, ']');
-	//	return this.authService.testGetToken('test');
-	//}
-
-	////////////////////  END TEST  /////////////////////
-	/////////////////////////////////////////////////////
-
-
-	/////////////////////////////////////////////////////
-	////////////////////  CALL API  /////////////////////
-
-	//LAUNCH API 42 auth
+	// CALL API
 	@Get('login42')
 	@UseGuards(AuthGuard('42strat'))
-	foooo() {
-		// N EST PAS APPELLE
-		console.log('impossible');
-		return;
+	shouldnt_be_called() {
+		throw new HttpException('[auth.controller] [login42]: le handler de la route login42 ne devrait pas etre appelle', HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	//callback from api
+	// CALLBACK API
 	@Get('42/callback')
 	@UseGuards(AuthGuard('42strat'))
 	async bar(@Req() req, @Res() response) {
 
-		console.log('controller: callback');
-		console.log('ICI [', req.user.username, ']');
-
-
 		// creation du tokenJWT avec le username, est ce une bonne pratique ?
-		const token = await this.authService.testGetToken(req.user.username);
+		const token = await this.authService.generateJwt(req.user.username);
 		//console.log('@Get[get_token_cookie] -> [', token, ']');
 
 		response.cookie('AUTH_TOKEN', token, { httpOnly: false });
 
 		//return response.send();//options?
-
 		response.redirect('http://localhost:3000/homepage');
-
-			// A METTRE EN PLACE APRES L ACTIVATION DE REACT ROUTER DOM :
-			//response.redirect('http://localhost:3000/homepage');
 	}
 
-		/////////////////// END CALL API ////////////////////
 		/////////////////////////////////////////////////////
-
-
-		/////////////////// OLD AUTH (TUTO) /////////////////
-
-
-		//Ces routes fonctionnaient avec les anciennes fonctions de auth.service
-		//(etant commentees) et qui fonctionnaient avec l'ancien scheme.prisma
-		// je les laisse pour l'exemple
-
-		//@Post('signup')
-		//signup(@Body() dto: AuthDto) {
-		//	//signup(@Req() req: Request) {
-		//	console.log( {dto} );
-		//	return this.authService.signup(dto);
-		//	}
-		//
-		//	@Post('signup_other')
-		//	signup_other(@Body('email') email: string, @Body('password') password: string ) {
-		//		console.log("On recupere email [" + email + "] et password [" + password + "]");
-		//		return 'Hello ceci est exemple de comment faire sans dto';
-		//	}
-		//
-		//	@Post('signin')
-		//	signin(@Body() dto: AuthDto) {
-		//		return this.authService.signin(dto);
-		//	}
-		//////////////// END OLD AUTH (TUTO) ////////////////
+		////////////////// Routes pour tests ////////////////
+		//@Get('get_token_cookie')
+		//async getTokenCookie(@Res() response) {
+		//	const token = await this.authService.generateJwt('test');
+		//	response.cookie('AUTH_TOKEN', token, { httpOnly: false });
+		//	return response.send();//options?
+		//}
+		//@Get('check_cookie')
+		//async checkTheCookie(@Req() request: any) {
+		//	const token = request.cookies['AUTH_TOKEN'];
+		//	if (!token)
+		//		return ("Le token n'etait pas disponible dans les cookies");
+		//	const result = await this.authService.testValidateToken(token);
+		//	return '[SUCCES] le token JWT du cookie authentifie l utilisateur';
+		//}
+		////////////////////  END TEST  /////////////////////
 		/////////////////////////////////////////////////////
-
-		}
+}
