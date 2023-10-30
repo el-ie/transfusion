@@ -1,9 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 
-import { ValidationPipe } from '@nestjs/common';
+import { UseGuards, ValidationPipe } from '@nestjs/common';
 
 import * as cookieParser from 'cookie-parser';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './auth/strategy/jwt.global';
 
 //import * as passport from 'passport';
 
@@ -18,6 +20,10 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  const reflect = app.get(Reflector);
+	app.useGlobalGuards(new JwtAuthGuard(reflect));
+
 	//app.use(passport.initialize());
 	await app.listen(3001);
 }

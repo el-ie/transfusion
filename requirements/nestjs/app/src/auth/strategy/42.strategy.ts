@@ -21,8 +21,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 	//Passport va automatiquement prendre le retour renvoye par validate et creer un champs user : ... dans le @Req du handler contenant quelque retour que ce soit
 	async validate(accessToken: string, refreshToken: string, profile, cb: Function) {
 
-		console.log('-----------------');
-		console.log('APPEL fonction validate : ', profile.name);
+		//penser a utiliser cb
+		console.log('[validate] Appel du callback de 42.strategy');
 
 		const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
 

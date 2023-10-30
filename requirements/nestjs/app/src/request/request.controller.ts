@@ -8,21 +8,19 @@ export class RequestController {
 
   //route hyper simple pour petit test avec axios
  
- @UseGuards(AuthGuard('jwt'))
+ //@UseGuards(AuthGuard('jwt'))
   @Get('get_all')
 	get_all(@Req() req) {
 
 		return req.user;
 	}
 
- @UseGuards(AuthGuard('jwt'))
   @Get('get_username')
 	get_username(@Req() req) {
 
 		return req.user.username;
 	}
 
- @UseGuards(AuthGuard('jwt'))
   @Get('get_id')
 	get_id(@Req() req) {
 

@@ -1,18 +1,20 @@
 import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from '@nestjs/passport';
+import { Public } from "src/decorators/public.decorator";
 
 @Controller('auth')
 export class AuthController{
 	constructor(private authService: AuthService) {}
 
-	@UseGuards(AuthGuard('jwt'))
+//	@UseGuards(AuthGuard('jwt')) //il a ete active de maniere globale
 	@Get('check_auth_token')
 	check_succes() {
 		return 'success';
 	}
 
-	// CALL API
+	/* CALL API Le decorateur Public est necessaire pour que la route puisse etre accessible sans passer par le guard jwt puisque l'utilisateur n'est pas encore authentifie */
+	@Public()
 	@UseGuards(AuthGuard('42strat'))
 	@Get('login42')
 	shouldnt_be_called() {
@@ -20,12 +22,11 @@ export class AuthController{
 	}
 
 	// CALLBACK API
+	@Public()
 	@UseGuards(AuthGuard('42strat'))
 	@Get('42/callback')
 	async bar(@Req() req, @Res() response) {
 
-		console.log('=========== passage =========');
-		console.log('ON A : ', req);
 		// creation du tokenJWT avec le username, est ce une bonne pratique ?
 		const token = await this.authService.generateJwt(req.user);
 		//console.log('@Get[get_token_cookie] -> [', token, ']');
