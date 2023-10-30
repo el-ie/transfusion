@@ -18,6 +18,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 		});
 	}
 
+	//Passport va automatiquement prendre le retour renvoye par validate et creer un champs user : ... dans le @Req du handler contenant quelque retour que ce soit
 	async validate(accessToken: string, refreshToken: string, profile, cb: Function) {
 
 		console.log('-----------------');
@@ -31,21 +32,36 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 
 			const user = await this.prisma.user.create({
 				data: {
+					sessionId: getRandomSessionId(),
 					username: profile.username,
 					email: profile.emails[0].value,
 				},
 			});
-
 			console.log(' ------ user successfully created -----');
-			return { username: profile.username, user };
 
+			return user;
 		}
 		else {
 			console.log(' the user ', profile.username, ' already exist :');
 			console.dir(user, { depth: null })
 
-			return { username: profile.username, user };
+			const updatedUser = await this.prisma.user.update({
+				where: { username: profile.username },
+				data: { sessionId: getRandomSessionId() }
+			});
+
+			return updatedUser;
 		}
 
 	}
 }
+
+function getRandomSessionId() {
+	let result = '';
+	const chain = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	const chainLength = chain.length;
+	for (let counter = 0; counter < 16; counter++)
+	result += chain.charAt(Math.floor(Math.random() * chainLength));
+	return result;
+}
+

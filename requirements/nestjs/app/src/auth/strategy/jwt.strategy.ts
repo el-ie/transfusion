@@ -35,6 +35,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		if (!utilisateur)
 					throw new HttpException('jwt strategy callback: l utilisateur n existe pas dans la database.', HttpStatus.UNAUTHORIZED);
 			// Remettre une bonne erreur //throw new UnauthorizedException();
+		
+		if (utilisateur.sessionId != payload.sessionId)
+					throw new HttpException('jwt strategy callback: Bad sessionId', HttpStatus.UNAUTHORIZED);
 
 		return utilisateur;
 	}

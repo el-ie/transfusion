@@ -10,10 +10,13 @@ import * as argon from 'argon2';
 export class AuthService {
 	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
 
-	async generateJwt(username: string) : Promise< {access_token: string} >{
+	async generateJwt(user) : Promise< {access_token: string} >{
 
 		const payload = {
-			username: username
+			id: user.id,
+			sessionId: user.sessionId,
+			username: user.username,
+
 			//ajouter des informations ?
 		};
 
@@ -30,17 +33,18 @@ export class AuthService {
 		}
 	}
 
-	async testValidateToken(token_to_test) {
-
-		const secret = this.config.get('JWT_SECRET');
-
-		try {
-			// peut on faire comme ca sans assignation
-			await this.jwt.verifyAsync(token_to_test.access_token, { secret: secret } );
-		} catch (err) {
-				throw new HttpException('[auth.service] [testValidateToken] : jwt.verifyAsync : error catched', HttpStatus.UNAUTHORIZED);
-		}
-
-	}	
+	//async testValidateToken(token_to_test) {
+	//
+	//	//il y a aussi le sessionId a checker
+	//
+	//	const secret = this.config.get('JWT_SECRET');
+	//
+	//	try {
+	//		// peut on faire comme ca sans assignation
+	//		await this.jwt.verifyAsync(token_to_test.access_token, { secret: secret } );
+	//	} catch (err) {
+	//			throw new HttpException('[auth.service] [testValidateToken] : jwt.verifyAsync : error catched', HttpStatus.UNAUTHORIZED);
+	//	}
+	//}	
 
 }
