@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, UseGuards, Param, Res } from "@nestjs/common";
+import { Controller, Post, Get, Body, Req, UseGuards, Param, Res, HttpStatus, HttpException } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
 
@@ -13,50 +13,21 @@ export class AuthController{
 	/////////////////////////////////////////////////////
 	//////////// TEST COMPLETE AUTHENTICATION ///////////
 
-	@Get('verification')
+	@Get('check_auth_token')
 	async verification(@Req() request: any) {
 
 		const token = request.cookies['AUTH_TOKEN'];
-		//console.log('@Get[check_cookie] -> [', token, ']');
 
 		if (!token)
-			return 'failure';
-
-			//throw new Error("[verification] Le cookie AUTH_TOKEN n est pas disponible.");
+			throw new HttpException('[auth.controller] [check_auth_token]: pas de AUTH_TOKEN', HttpStatus.UNAUTHORIZED);
 
 		try {
-		const result = await this.authService.testValidateToken(token);
-
-		if (result != true)
-			throw new Error("[verification] result != true, testValidateToken a rate");
-			return 'succes';
-			//return '[verification] success, le cookie authentifie l utilisateur' ;
+			const result = await this.authService.testValidateToken(token);
+			return 'success';
 		}
 		catch (err) {
-			//throw new Error("[verification] Erreur dans testValidateToken");
-			return 'failure';
+				throw new HttpException('[auth.controller] [check_auth_token]: testValidateToken mauvais retour', HttpStatus.UNAUTHORIZED);
 		}
-
-			//CALL API
-	}
-
-	@Get('authenticate')
-	async authenticate(@Req() request: any) {
-
-		const token = request.cookies['AUTH_TOKEN'];
-		//console.log('@Get[check_cookie] -> [', token, ']');
-
-		if (!token)
-			return 'FAILURE';
-
-		if (token)
-			{
-				const result = await this.authService.testValidateToken(token);
-				if (result == true)
-					return '@get[authenticate] AUTHENTICATION SUCCESFULL';
-			}
-
-			//CALL API
 	}
 
 	//////////////////// END  TEST  /////////////////////
@@ -85,8 +56,7 @@ export class AuthController{
 			return ("Le token n'etait pas disponible dans les cookies");
 
 		const result = await this.authService.testValidateToken(token);
-		if (!result)
-			return('[ECHEC] Le token du cookie est invalide');
+
 		return '[SUCCES] le token JWT du cookie authentifie l utilisateur';
 	}
 
@@ -133,39 +103,39 @@ export class AuthController{
 
 		response.redirect('http://localhost:3000/homepage');
 
-		// A METTRE EN PLACE APRES L ACTIVATION DE REACT ROUTER DOM :
-		//response.redirect('http://localhost:3000/homepage');
+			// A METTRE EN PLACE APRES L ACTIVATION DE REACT ROUTER DOM :
+			//response.redirect('http://localhost:3000/homepage');
 	}
 
-	/////////////////// END CALL API ////////////////////
-	/////////////////////////////////////////////////////
+		/////////////////// END CALL API ////////////////////
+		/////////////////////////////////////////////////////
 
 
-	/////////////////// OLD AUTH (TUTO) /////////////////
+		/////////////////// OLD AUTH (TUTO) /////////////////
 
 
-	//Ces routes fonctionnaient avec les anciennes fonctions de auth.service
-	//(etant commentees) et qui fonctionnaient avec l'ancien scheme.prisma
-	// je les laisse pour l'exemple
+		//Ces routes fonctionnaient avec les anciennes fonctions de auth.service
+		//(etant commentees) et qui fonctionnaient avec l'ancien scheme.prisma
+		// je les laisse pour l'exemple
 
-	//@Post('signup')
-	//signup(@Body() dto: AuthDto) {
-	//	//signup(@Req() req: Request) {
-	//	console.log( {dto} );
-	//	return this.authService.signup(dto);
-	//	}
-	//
-	//	@Post('signup_other')
-	//	signup_other(@Body('email') email: string, @Body('password') password: string ) {
-	//		console.log("On recupere email [" + email + "] et password [" + password + "]");
-	//		return 'Hello ceci est exemple de comment faire sans dto';
-	//	}
-	//
-	//	@Post('signin')
-	//	signin(@Body() dto: AuthDto) {
-	//		return this.authService.signin(dto);
-	//	}
+		//@Post('signup')
+		//signup(@Body() dto: AuthDto) {
+		//	//signup(@Req() req: Request) {
+		//	console.log( {dto} );
+		//	return this.authService.signup(dto);
+		//	}
+		//
+		//	@Post('signup_other')
+		//	signup_other(@Body('email') email: string, @Body('password') password: string ) {
+		//		console.log("On recupere email [" + email + "] et password [" + password + "]");
+		//		return 'Hello ceci est exemple de comment faire sans dto';
+		//	}
+		//
+		//	@Post('signin')
+		//	signin(@Body() dto: AuthDto) {
+		//		return this.authService.signin(dto);
+		//	}
 		//////////////// END OLD AUTH (TUTO) ////////////////
 		/////////////////////////////////////////////////////
 
-	}
+		}

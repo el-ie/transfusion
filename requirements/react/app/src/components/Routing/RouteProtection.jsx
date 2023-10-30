@@ -12,9 +12,9 @@ const RouteProtection = (props) => {
         const checkAuthentication = async () => {
 
             try {
-                const result = await axios.get('http://localhost:3001/auth/verification', { withCredentials: true });
+                const result = await axios.get('http://localhost:3001/auth/check_auth_token', { withCredentials: true });
 
-				if (result.data === 'succes')
+				if (result.data === 'success')
 					setIsAuthenticated(true);
 				else
 					setIsAuthenticated(false);

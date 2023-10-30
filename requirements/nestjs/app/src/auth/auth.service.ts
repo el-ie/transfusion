@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -44,12 +44,8 @@ export class AuthService {
 
 		try {
 			const decoded = await this.jwt.verifyAsync(token_to_test.access_token, { secret: secret } );
-			console.log(decoded);
-			return true;
 		} catch (err) {
-			console.log('test token: Token invalide');
-			console.log(err);
-			return false;
+				throw new HttpException('[auth.service] [testValidateToken] : jwt.verifyAsync : error catched', HttpStatus.UNAUTHORIZED);
 		}
 
 	}	
