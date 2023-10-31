@@ -1,13 +1,25 @@
-import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException } from "@nestjs/common";
+import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from '@nestjs/passport';
 import { Public } from "src/decorators/public.decorator";
+
+import { toDataURL } from "qrcode";
 
 @Controller('auth')
 export class AuthController{
 	constructor(private authService: AuthService) {}
 
-//	@UseGuards(AuthGuard('jwt')) //il a ete active de maniere globale
+	@Get('twofa_getqr')
+	async getqr(@Res() response, @Req() request) {
+
+		//console.log('--------------twofa--------------');
+		const { otpAuthUrl } = await this.authService.launchTwoFa(request.user);
+		const result = await toDataURL(otpAuthUrl);
+
+		return (response.json(result));
+	}
+
+	//	@UseGuards(AuthGuard('jwt')) //il a ete active de maniere globale
 	@Get('check_auth_token')
 	check_succes() {
 		return 'success';

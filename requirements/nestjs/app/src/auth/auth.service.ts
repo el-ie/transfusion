@@ -6,9 +6,28 @@ import { ConfigService } from '@nestjs/config';
 import * as argon from 'argon2';
 //pourquoi il y avait argon ?
 
+import { authenticator } from 'otplib';
+
 @Injectable()
 export class AuthService {
 	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
+
+
+	//to secure
+	async launchTwoFa(userInfos) {
+
+		//console.log('___launchTwoFa___');
+		//console.log('userInfos = ', userInfos);
+		const secret = authenticator.generateSecret();
+		//utiliser le mail plutot que username pour respecter keyuri ?
+		const otpAuthUrl = authenticator.keyuri( userInfos.username, 'TRANSCENDANCE', secret, );
+		const updatedUser = await this.prisma.user.update({
+			where: { username: userInfos.username },
+			data: { twoFaSecret: secret }
+		});
+
+		return { otpAuthUrl };
+	}
 
 	async generateJwt(user) : Promise< {access_token: string} >{
 
@@ -28,8 +47,8 @@ export class AuthService {
 			return { access_token: token };
 
 		} catch (err){
-				throw new HttpException('[auth.service] [generateJwt] : jwt.signAsync : error catched', HttpStatus.INTERNAL_SERVER_ERROR);
-				//est ce que signAsync peut throw une erreur
+			throw new HttpException('[auth.service] [generateJwt] : jwt.signAsync : error catched', HttpStatus.INTERNAL_SERVER_ERROR);
+			//est ce que signAsync peut throw une erreur
 		}
 	}
 
