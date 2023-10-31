@@ -18,4 +18,7 @@ model User {
   email String @default("default@gmail.com") 
   username String @unique
   age Int @default(142)
+
+  twoFaEnabled Boolean @default(false)
+  twoFaSecret String @default("")
 }
