@@ -14,6 +14,7 @@ export class AuthService {
 
 
 	//to secure
+	// Permet a l'utilisateur d'activer la 2FA pour son compte, Tant que l'utilisateur n'a pas valide son code 2FA dans activateTwoFa alors la 2FA sera inactive
 	async launchTwoFa(userInfos) {
 
 		//console.log('___launchTwoFa___');
@@ -29,12 +30,27 @@ export class AuthService {
 		return { otpAuthUrl };
 	}
 
-	async verifyTwoFa(user, twoFactorCode: string) {
+	// Une fois que l utilisateur a demande l'activation de la 2FA cette fonction permettra de lui activer apres qu'il ai entre un code 2FA valide une premiere fois, apres cela il sera oblige d'entrer un code 2FA a chaque fois avant d'acceder a son compte
+	async activateTwoFa(user, twoFactorCode: string) {
 
 		console.log('---- verifyTwoFa ----');
 		console.log('user.twoFaSecret = ', user.twoFaSecret);
 
 		//await?
+		if ( authenticator.verify( { token: twoFactorCode, secret: user.twoFaSecret } ) === false )
+		return false;
+
+		await this.prisma.user.update({
+			where: { username: user.username },
+			data: { twoFaEnabled: true }
+		});
+
+		return true;
+	}
+
+	// Cette fonction permet a l'utilisateur qui a precedemment active la 2FA sur son compte avec activateTwoFa de lancer une identification 2FA.pour obtenir un cookie
+	async twoFaAuthenticate(user, twoFactorCode: string) {
+
 		if ( authenticator.verify( { token: twoFactorCode, secret: user.twoFaSecret } ) === false )
 		return false;
 
@@ -46,10 +62,6 @@ export class AuthService {
 
 		return true;
 
-		//return authenticator.verify({
-		//	token: twoFactorCode,
-		//	secret: user.twoFaSecret,
-		//});
 	}
 
 
@@ -60,7 +72,6 @@ export class AuthService {
 			id: user.id,
 			sessionId: user.sessionId,
 			username: user.username,
-
 			//ajouter des informations ?
 		};
 

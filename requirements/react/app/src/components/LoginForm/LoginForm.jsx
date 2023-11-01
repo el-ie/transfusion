@@ -103,10 +103,10 @@ export default function LoginForm() {
 
 
 
-		{isSigned &&
-		<button onClick={handleLaunchTwoFa} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-20px' }}> 2FA get QR-code  </button>
+		{isSigned && !twoFaActivation &&
+		<button onClick={handleLaunchTwoFa} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-20px' }}> active 2FA with QR-code  </button>
 		}
-		{ qrCode && 
+		{ qrCode && !twoFaActivation &&
 			<div style={{ position:'relative', left: '0px', top: '50px' }}>
 			<br />
 			<h3> Veuillez entrer le code fournit par google authenticator </h3>

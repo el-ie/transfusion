@@ -20,14 +20,12 @@ export class AuthController{
 		return (response.json(result));
 	}
 
-	@Post('2fa_activate')
-	@HttpCode(200)
-	async turnOnTwoFactorAuthentication(@Req() request, @Body() body) {
+	@Post('2fa_activate') async turnOnTwoFactorAuthentication(@Req() request, @Body() body, @Res() response) {
 
 		console.log('-----------2fa activation ------------');
 
 		const isCodeValid =
-			this.authService.verifyTwoFa(
+			await this.authService.activateTwoFa(
 				request.user,
 				body.twoFactorCode,
 		);
@@ -36,6 +34,13 @@ export class AuthController{
 			throw new HttpException('[auth.controller] [2fa activate]: mauvais code', HttpStatus.UNAUTHORIZED);
 		}
 		console.log('[2fa - activate] valide ');
+
+		const token = await this.authService.generateJwt(request.user);
+	
+		response.cookie('2FA_TOKEN', token, { httpOnly: false });
+
+		//response.redirect('http://localhost:3000/login');
+		response.send(); //code http ? options ?
 		//le @HttpCode(200) enverra la reponse correcte
 	}
 
