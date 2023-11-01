@@ -29,15 +29,27 @@ export class AuthService {
 		return { otpAuthUrl };
 	}
 
-	verifyTwoFa(user, twoFactorCode: string) {
+	async verifyTwoFa(user, twoFactorCode: string) {
 
 		console.log('---- verifyTwoFa ----');
 		console.log('user.twoFaSecret = ', user.twoFaSecret);
 
-		return authenticator.verify({
-			token: twoFactorCode,
-			secret: user.twoFaSecret,
+		//await?
+		if ( authenticator.verify( { token: twoFactorCode, secret: user.twoFaSecret } ) === false )
+		return false;
+
+
+		await this.prisma.user.update({
+			where: { username: user.username },
+			data: { twoFaEnabled: true }
 		});
+
+		return true;
+
+		//return authenticator.verify({
+		//	token: twoFactorCode,
+		//	secret: user.twoFaSecret,
+		//});
 	}
 
 

@@ -1,13 +1,14 @@
-import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException, Post, Body } from "@nestjs/common";
+import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException, Post, Body, HttpCode } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from '@nestjs/passport';
 import { Public } from "src/decorators/public.decorator";
 
 import { toDataURL } from "qrcode";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Controller('auth')
 export class AuthController{
-	constructor(private authService: AuthService) {}
+	constructor(private authService: AuthService, private prisma: PrismaService) {}
 
 	@Get('2fa_getqr')
 	async getqr(@Res() response, @Req() request) {
@@ -20,13 +21,10 @@ export class AuthController{
 	}
 
 	@Post('2fa_activate')
+	@HttpCode(200)
 	async turnOnTwoFactorAuthentication(@Req() request, @Body() body) {
 
-		console.log('-----------2fa activate ------------');
-		//console.log('body: ', body);
-		console.log('request.user: ', request.user);
-		console.log('body.twoFactorCode: ', body.twoFactorCode);
-		console.log('___________________________________');
+		console.log('-----------2fa activation ------------');
 
 		const isCodeValid =
 			this.authService.verifyTwoFa(
@@ -37,17 +35,31 @@ export class AuthController{
 		if (!isCodeValid) {
 			throw new HttpException('[auth.controller] [2fa activate]: mauvais code', HttpStatus.UNAUTHORIZED);
 		}
+		console.log('[2fa - activate] valide ');
+		//le @HttpCode(200) enverra la reponse correcte
+	}
 
-		console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-		console.log('[2fa - activate] valide !!');
-		console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+	//Route pour le developpement
+	@Get('check_2fa_activation')
+	@HttpCode(200)
+	async check_2fa_activation(@Req() request) {
 
-		//await this.usersService.turnOnTwoFactorAuthentication(request.user.userId);
-		//await this.usersService.turnOnTwoFactorAuthentication(request.user.id);
+		const currentUser = await this.prisma.user.findUnique({
+			where: { username: request.user.username },
+		});
 
+		if (!currentUser.twoFaEnabled)
+			throw new HttpException('[auth.controller] [check_2fa_validation]: 2FA INACTIF', HttpStatus.UNAUTHORIZED);
+	}
+
+	@Get('check_is_signed')
+	@HttpCode(200)
+	checkIsSigned() {
 	}
 
 
+	// cette route permet a RouteProtection de react de verifier si l utilisateur a bien son cookie
+	// jwt apour proteger les routes
 	//	@UseGuards(AuthGuard('jwt')) //il a ete active de maniere globale
 	@Get('check_auth_token')
 	check_succes() {
@@ -75,7 +87,7 @@ export class AuthController{
 		response.cookie('AUTH_TOKEN', token, { httpOnly: false });
 
 		//return response.send();//options?
-		response.redirect('http://localhost:3000/homepage');
+		response.redirect('http://localhost:3000/login');
 	}
 
 		//////////////////////////////////////////////////////////
