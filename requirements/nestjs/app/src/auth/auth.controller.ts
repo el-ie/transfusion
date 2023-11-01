@@ -20,7 +20,8 @@ export class AuthController{
 		return (response.json(result));
 	}
 
-	@Post('2fa_activate') async turnOnTwoFactorAuthentication(@Req() request, @Body() body, @Res() response) {
+	@Post('2fa_activate') 
+	async turnOnTwoFactorAuthentication(@Req() request, @Body() body, @Res() response) {
 
 		console.log('-----------2fa activation ------------');
 
@@ -37,14 +38,20 @@ export class AuthController{
 
 		const token = await this.authService.generateJwt(request.user);
 	
-		response.cookie('2FA_TOKEN', token, { httpOnly: false });
-
+		response.cookie('TWOFA_TOKEN', token, { httpOnly: false });
 		//response.redirect('http://localhost:3000/login');
 		response.send(); //code http ? options ?
 		//le @HttpCode(200) enverra la reponse correcte
 	}
 
-	//Route pour le developpement
+	@UseGuards(AuthGuard('jwt-twofa'))
+	@Get ('check_2fa_cookie')
+	//@HttpCode(200)
+	check_twofa_cookie() {
+		//succes du guard
+	}
+
+	// route pour React pour l affichage de l etat de l activation 2FA
 	@Get('check_2fa_activation')
 	@HttpCode(200)
 	async check_2fa_activation(@Req() request) {
@@ -57,11 +64,11 @@ export class AuthController{
 			throw new HttpException('[auth.controller] [check_2fa_validation]: 2FA INACTIF', HttpStatus.UNAUTHORIZED);
 	}
 
+	//check for basic auth
 	@Get('check_is_signed')
 	@HttpCode(200)
 	checkIsSigned() {
 	}
-
 
 	// cette route permet a RouteProtection de react de verifier si l utilisateur a bien son cookie
 	// jwt apour proteger les routes

@@ -54,12 +54,6 @@ export class AuthService {
 		if ( authenticator.verify( { token: twoFactorCode, secret: user.twoFaSecret } ) === false )
 		return false;
 
-
-		await this.prisma.user.update({
-			where: { username: user.username },
-			data: { twoFaEnabled: true }
-		});
-
 		return true;
 
 	}

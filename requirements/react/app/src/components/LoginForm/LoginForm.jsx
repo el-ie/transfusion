@@ -11,6 +11,8 @@ export default function LoginForm() {
 
 	const [twoFaActivation, setTwoFaActivation] = useState(false);
 
+	const [twoFaCookieState, setTwoFaCookieState] = useState(false);
+
 	const [isSigned, setIsSigned] = useState(false);
 
 	function handleSignup() {
@@ -42,6 +44,17 @@ export default function LoginForm() {
         };
 
 		getTwoFaActivationState();
+
+        const getTwoFaCookieState = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
+				setTwoFaCookieState(true);
+            } catch (error) {
+				console.log('', error.response);
+            }
+        };
+
+		getTwoFaCookieState();
 
     });
     //}, []);
@@ -94,6 +107,14 @@ export default function LoginForm() {
 		{ twoFaActivation ?
 				<h2 style={{ color: 'green' }} > ACTIVATED </h2> 
 				: <h2 style={{ color: 'red' }} > INACTIVE </h2>
+		}
+		</div>
+
+		<div style={{ position: 'absolute', right: '100px', top: '450px', border: '2px solid black', padding: '10px', borderRadius: '10px' }}>
+		<h2> 2FA Cookie : </h2>
+		{ twoFaCookieState ?
+				<h2 style={{ color: 'green' }} > VALID </h2> 
+				: <h2 style={{ color: 'red' }} > INVALID <br />/ ABSENT </h2>
 		}
 		</div>
 
