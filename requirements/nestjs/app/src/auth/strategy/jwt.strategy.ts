@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
 	async validate(payload: any) {
 
-		console.log('--- jwt callback ---');
+		//console.log('--- jwt callback ---');
 
 		if (!payload.username)
 					throw new HttpException('jwt strategy callback: pas username dans le token', HttpStatus.UNAUTHORIZED);

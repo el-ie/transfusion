@@ -29,6 +29,19 @@ export class AuthService {
 		return { otpAuthUrl };
 	}
 
+	verifyTwoFa(user, twoFactorCode: string) {
+
+		console.log('---- verifyTwoFa ----');
+		console.log('user.twoFaSecret = ', user.twoFaSecret);
+
+		return authenticator.verify({
+			token: twoFactorCode,
+			secret: user.twoFaSecret,
+		});
+	}
+
+
+
 	async generateJwt(user) : Promise< {access_token: string} >{
 
 		const payload = {

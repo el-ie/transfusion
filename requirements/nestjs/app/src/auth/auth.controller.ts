@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException, Post } from "@nestjs/common";
+import { Controller, Get, Req, UseGuards, Res, HttpStatus, HttpException, Post, Body } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from '@nestjs/passport';
 import { Public } from "src/decorators/public.decorator";
@@ -9,7 +9,7 @@ import { toDataURL } from "qrcode";
 export class AuthController{
 	constructor(private authService: AuthService) {}
 
-	@Get('twofa_getqr')
+	@Get('2fa_getqr')
 	async getqr(@Res() response, @Req() request) {
 
 		//console.log('--------------twofa--------------');
@@ -19,6 +19,35 @@ export class AuthController{
 		return (response.json(result));
 	}
 
+	@Post('2fa_activate')
+	async turnOnTwoFactorAuthentication(@Req() request, @Body() body) {
+
+		console.log('-----------2fa activate ------------');
+		//console.log('body: ', body);
+		console.log('request.user: ', request.user);
+		console.log('body.twoFactorCode: ', body.twoFactorCode);
+		console.log('___________________________________');
+
+		const isCodeValid =
+			this.authService.verifyTwoFa(
+				request.user,
+				body.twoFactorCode,
+		);
+
+		if (!isCodeValid) {
+			throw new HttpException('[auth.controller] [2fa activate]: mauvais code', HttpStatus.UNAUTHORIZED);
+		}
+
+		console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+		console.log('[2fa - activate] valide !!');
+		console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+		//await this.usersService.turnOnTwoFactorAuthentication(request.user.userId);
+		//await this.usersService.turnOnTwoFactorAuthentication(request.user.id);
+
+	}
+
+
 	//	@UseGuards(AuthGuard('jwt')) //il a ete active de maniere globale
 	@Get('check_auth_token')
 	check_succes() {
@@ -26,7 +55,7 @@ export class AuthController{
 	}
 
 	/* CALL API Le decorateur Public est necessaire pour que la route puisse etre accessible sans passer par le guard jwt puisque l'utilisateur n'est pas encore authentifie */
-	@Public()
+		@Public()
 	@UseGuards(AuthGuard('42strat'))
 	@Get('login42')
 	shouldnt_be_called() {
