@@ -31,7 +31,7 @@ export class AuthService {
 	}
 
 	// Une fois que l utilisateur a demande l'activation de la 2FA cette fonction permettra de lui activer apres qu'il ai entre un code 2FA valide une premiere fois, apres cela il sera oblige d'entrer un code 2FA a chaque fois avant d'acceder a son compte
-	async activateTwoFa(user, twoFactorCode: string) {
+	async twoFaActivate(user, twoFactorCode: string) {
 
 		console.log('---- verifyTwoFa ----');
 		console.log('user.twoFaSecret = ', user.twoFaSecret);
@@ -47,6 +47,7 @@ export class AuthService {
 
 		return true;
 	}
+
 
 	// Cette fonction permet a l'utilisateur qui a precedemment active la 2FA sur son compte avec activateTwoFa de lancer une identification 2FA.pour obtenir un cookie
 	async twoFaAuthenticate(user, twoFactorCode: string) {

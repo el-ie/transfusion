@@ -25,8 +25,9 @@ export class AuthController{
 
 		console.log('-----------2fa activation ------------');
 
+		//Attention changement de nom twoFaActivate
 		const isCodeValid =
-			await this.authService.activateTwoFa(
+			await this.authService.twoFaActivate(
 				request.user,
 				body.twoFactorCode,
 		);
@@ -49,6 +50,31 @@ export class AuthController{
 	//@HttpCode(200)
 	check_twofa_cookie() {
 		//succes du guard
+	}
+
+	//to get the TWOFA_TOKEN cookie quand la 2fa a deja ete activee sur le compte et que l utilisateur se reconnecte
+	@Post('2fa_authenticate') 
+	async twoFaAuthentication(@Req() request, @Body() body, @Res() response) {
+
+		console.log('-----------2fa activation ------------');
+
+		const isCodeValid =
+			await this.authService.twoFaAuthenticate(
+				request.user,
+				body.twoFactorCode,
+		);
+
+		if (!isCodeValid) {
+			throw new HttpException('[auth.controller] [2fa activate]: mauvais code', HttpStatus.UNAUTHORIZED);
+		}
+		console.log('[2fa - authenticate] valide ');
+
+		const token = await this.authService.generateJwt(request.user);
+	
+		response.cookie('TWOFA_TOKEN', token, { httpOnly: false });
+		//response.redirect('http://localhost:3000/login');
+		response.send(); //code http ? options ?
+		//le @HttpCode(200) enverra la reponse correcte
 	}
 
 	// route pour React pour l affichage de l etat de l activation 2FA
