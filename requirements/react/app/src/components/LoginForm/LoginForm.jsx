@@ -109,7 +109,7 @@ export default function LoginForm() {
 		<div style={{ textAlign: 'center' }}>
 
 
-		<div style={{ position: 'absolute', right: '100px', top: '50px', border: '2px solid black', padding: '10px', borderRadius: '10px' }}>
+		<div style={{ position: 'absolute', right: '4%', top: '6%', border: '2px solid black', padding: '10px', borderRadius: '10px' }}>
 		<h2> user status : </h2>
 		{ isSigned ?
 				<h2 style={{ color: 'green', display: 'inline-block' }} > SIGNED IN </h2> 
@@ -145,9 +145,7 @@ export default function LoginForm() {
 
 		<br />
 
-		<button onClick={handleSignup} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-86px' }}>  Signup  </button>
-
-
+		<button onClick={handleSignup} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-86px', width: '10%', height: '40px', fontSize: '17px' }}>  Signup  </button>
 
 		{isSigned && !twoFaActivation &&
 		<button onClick={handleLaunchTwoFa} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-20px' }}> active 2FA with QR-code  </button>
@@ -167,6 +165,10 @@ export default function LoginForm() {
 
 		{isSigned &&
 				<UserInfos />
+		}
+
+		{isSigned && twoFaActivation && twoFaCookieState &&
+				<h2 style={{ position: 'absolute', right: '3%', bottom: '4%', color: 'green'  }} > 2FA Authentication successfull </h2>
 		}
 
 		</div>
