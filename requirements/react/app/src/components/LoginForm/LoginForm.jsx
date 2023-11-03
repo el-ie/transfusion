@@ -154,10 +154,12 @@ export default function LoginForm() {
 
 		<br />
 
+		{ !isSigned &&
 		<button onClick={handleSignup} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-86px', width: '10%', height: '40px', fontSize: '17px' }}>  Signup  </button>
+		}
 
 		{isSigned && !twoFaActivation &&
-		<button onClick={handleLaunchTwoFa} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-20px' }}> active 2FA with QR-code  </button>
+		<button onClick={handleLaunchTwoFa} style={{ padding: '15px 25px', borderRadius: '4px', position:'relative', left:'-20px' }}> active 2FA with QR-code  </button>
 		}
 
 		{ qrCode && !twoFaActivation &&
