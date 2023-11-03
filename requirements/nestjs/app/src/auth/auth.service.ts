@@ -43,7 +43,6 @@ export class AuthService {
 	//to secure
 	// Permet a l'utilisateur d'activer la 2FA pour son compte, Tant que l'utilisateur n'a pas valide son code 2FA dans activateTwoFa alors la 2FA sera inactive
 	async launchTwoFa(userInfos) {
-		//console.log('___launchTwoFa___');
 		const secret = authenticator.generateSecret();
 		//utiliser le mail plutot que username pour respecter keyuri ?
 		const otpAuthUrl = authenticator.keyuri( userInfos.username, 'TRANSCENDANCE', secret, );
@@ -53,8 +52,6 @@ export class AuthService {
 
 	// Une fois que l utilisateur a demande l'activation de la 2FA cette fonction permettra de lui activer apres qu'il ai entre un code 2FA valide une premiere fois, apres cela il sera oblige d'entrer un code 2FA a chaque fois avant d'acceder a son compte
 	async twoFaActivate(user, twoFactorCode: string) {
-
-		console.log('---- verifyTwoFa ----');
 		//await?
 		if ( authenticator.verify( { token: twoFactorCode, secret: user.twoFaSecret } ) === false )
 		return false;

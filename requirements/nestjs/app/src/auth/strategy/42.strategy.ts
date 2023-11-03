@@ -22,11 +22,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 	async validate(accessToken: string, refreshToken: string, profile, cb: Function) {
 
 		//penser a utiliser cb
-		console.log('[validate] Appel du callback de 42.strategy');
 
-		//const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
+		console.log('42 API strategy :');
 
-		//le username ne sera plus Unique
 		const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
 
 		if (!user) {

@@ -10,7 +10,6 @@ export class TwoFaJwtStrategy extends PassportStrategy(Strategy, 'jwt-twofa') {
 		super({
 			// recuperation du cookie est elle ok ?
 			jwtFromRequest: (req) => {
-				//console.log('ON a req.cookies.AUTH_TOKEN = [', req.cookies.AUTH_TOKEN);
 				if (req.cookies.TWOFA_TOKEN)
 					return req.cookies.TWOFA_TOKEN.access_token;
 				else if (req.cookies.AUTH_TOKEN)
@@ -26,14 +25,6 @@ export class TwoFaJwtStrategy extends PassportStrategy(Strategy, 'jwt-twofa') {
 	}
 
 	async validate(payload: any) {
-
-		//console.log('--- jwt callback ---');
-		console.log('$$$ 2FA strategie $$$');
-		//console.log(payload);
-
-		//checker le type du token et si c est un auth token :
-		// 2fa activee ? throw une erreur : renvoyer l utilisateur
-
 
 			if (!payload.username)
 				throw new HttpException('2fa.jwt strategy callback: pas username dans le token', HttpStatus.UNAUTHORIZED);
@@ -51,7 +42,6 @@ export class TwoFaJwtStrategy extends PassportStrategy(Strategy, 'jwt-twofa') {
 			// AJOUTER twoFaEnabled dans le token pour que ca marche
 			if (utilisateur.twoFaEnabled === true && (payload.cookie_type != 'twofa') )
 				throw new HttpException('2fa.jwt strategy callback: l utilisateur a active la 2fa et n a pas son cookie TWOFA_TOKEN', HttpStatus.UNAUTHORIZED);
-
 
 			//return true;// true ecrase les donnees utilissateur si le guard 2fa passe apres le guard auth token
 			//l'ordre des guards est determine par l'ordre des useGlobalGuards dans main.ts

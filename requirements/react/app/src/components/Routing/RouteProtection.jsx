@@ -9,42 +9,21 @@ const RouteProtection = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
 
     useEffect(() => {
+
         const checkAuthentication = async () => {
 
             try {
-                const result = await axios.get('http://localhost:3001/auth/check_auth_token', { withCredentials: true });
-
-				if (result.data === 'success')
-					setIsAuthenticated(true);
-				//else
-				//	setIsAuthenticated(false);
-				//useless ?
+                await axios.get('http://localhost:3001/auth/check_auth_cookie', { withCredentials: true });
+				await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
+				setIsAuthenticated(true);
             } catch (error) {
-				
-                console.error("Error RouteProtection axios get ... auth/verification", error.response);
+                console.log("RouteProtection : route interdite");
                 setIsAuthenticated(false);
             }
 
-    //        try {
-    //            const result = await axios.get('http://localhost:3001/auth/check_2fa_activation', { withCredentials: true });
-				//// ici la 2fa est active si on peut aller la
-    //            const result = await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
-    //        } catch (error) {
-    //        }
-
         };
-    //            const result = await axios.get('http://localhost:3001/auth/check_auth_token', { withCredentials: true });
-				//if (result.data === 'success')
-				//	setIsAuthenticated(true);
-				//else
-				//	throw new Error('RouteProtection : Echec authentification classique');
-				//
-				//await axios.get('http://localhost:3001/auth/check_2fa_activation', { withCredentials: true });
-				////si on arrive la la 2fa est activee sinon une erreur a ete throw du back
-				//await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
 
         checkAuthentication();
-
     }, []);
 
     if (isAuthenticated === null) {
@@ -55,15 +34,8 @@ const RouteProtection = (props) => {
 		return props.children;
 
 	else
-	{
 		return <Navigate to="/login" replace /> 
-		//return (
-		//	<div>
-		//	<p> Pleas authenticate to go to the home page </p>
-		//	<LoginForm/>
-		//	</div>
-		//);
-	}
+
 }
 
 export default RouteProtection;

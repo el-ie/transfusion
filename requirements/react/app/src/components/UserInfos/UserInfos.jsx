@@ -23,7 +23,6 @@ export default function UserInfos() {
 
 
 	return ( 
-		<RouteProtection>
 		<div style={{ position: 'absolute', bottom: '100px', left: '100px' }}>
 			<br/><br/><br/>
 			<div style={{ textAlign: 'left'}}>
@@ -31,7 +30,6 @@ export default function UserInfos() {
 			<pre> <p> [{JSON.stringify(data, null, 2)}] </p> </pre>
 			</div>
 			</div>
-		</RouteProtection>
 	);
 }
 			//<pre> <h1> [{JSON.stringify(data, null, 2)}] </h1> </pre>

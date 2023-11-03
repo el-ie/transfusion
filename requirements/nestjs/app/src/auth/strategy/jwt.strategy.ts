@@ -11,7 +11,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		super({
 			// recuperation du cookie est elle ok ?
 			jwtFromRequest: (req) => {
-				//console.log('ON a req.cookies.AUTH_TOKEN = [', req.cookies.AUTH_TOKEN);
 				if (req.cookies.AUTH_TOKEN)
 					return req.cookies.AUTH_TOKEN.access_token;
 				else
@@ -23,8 +22,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 	}
 
 	async validate(payload: any) {
-
-		//console.log('--- jwt callback ---');
 
 		if (!payload.username)
 					throw new HttpException('jwt strategy callback: pas username dans le token', HttpStatus.UNAUTHORIZED);
