@@ -13,6 +13,8 @@ npm install
 
 npx prisma migrate dev
 
+npx prisma studio&
+
 # # Run prisma studio
 # npx prisma studio
 
