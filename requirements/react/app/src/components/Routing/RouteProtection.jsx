@@ -16,14 +16,32 @@ const RouteProtection = (props) => {
 
 				if (result.data === 'success')
 					setIsAuthenticated(true);
-				else
-					setIsAuthenticated(false);
+				//else
+				//	setIsAuthenticated(false);
+				//useless ?
             } catch (error) {
 				
                 console.error("Error RouteProtection axios get ... auth/verification", error.response);
                 setIsAuthenticated(false);
             }
+
+    //        try {
+    //            const result = await axios.get('http://localhost:3001/auth/check_2fa_activation', { withCredentials: true });
+				//// ici la 2fa est active si on peut aller la
+    //            const result = await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
+    //        } catch (error) {
+    //        }
+
         };
+    //            const result = await axios.get('http://localhost:3001/auth/check_auth_token', { withCredentials: true });
+				//if (result.data === 'success')
+				//	setIsAuthenticated(true);
+				//else
+				//	throw new Error('RouteProtection : Echec authentification classique');
+				//
+				//await axios.get('http://localhost:3001/auth/check_2fa_activation', { withCredentials: true });
+				////si on arrive la la 2fa est activee sinon une erreur a ete throw du back
+				//await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
 
         checkAuthentication();
 

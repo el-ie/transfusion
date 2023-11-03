@@ -6,6 +6,7 @@ import { UseGuards, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './auth/strategy/jwt.global';
+import { TwoFaAuthGuard } from './auth/strategy/2fa.global';
 
 //import * as passport from 'passport';
 
@@ -22,7 +23,9 @@ async function bootstrap() {
   });
 
   const reflect = app.get(Reflector);
+
 	app.useGlobalGuards(new JwtAuthGuard(reflect));
+	app.useGlobalGuards(new TwoFaAuthGuard(reflect)); //peut on passer le meme reflect ?
 
 	//app.use(passport.initialize());
 	await app.listen(3001);

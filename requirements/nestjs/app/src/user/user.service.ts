@@ -9,6 +9,7 @@ export class UserService {
 		return this.prisma.user.findUnique({ where: { id: id } });
 	}
 
+	//REMPLACER
 	async findOneByUsername(username: string) {
 		return this.prisma.user.findUnique({ where: { username: username } });
 	}

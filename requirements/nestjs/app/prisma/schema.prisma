@@ -13,12 +13,11 @@ datasource db {
 // model for testing (tuto nestjs course for beginners) (User and Bookmark)
 model User {
   id Int @id @default(autoincrement())
-  sessionId String
   createdAt DateTime @default(now())
-  email String @default("default@gmail.com") 
   username String @unique
-  age Int @default(142)
+  login String @unique
 
+  sessionId String
   twoFaEnabled Boolean @default(false)
   twoFaSecret String @default("")
 }

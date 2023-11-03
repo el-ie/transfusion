@@ -24,6 +24,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 		//penser a utiliser cb
 		console.log('[validate] Appel du callback de 42.strategy');
 
+		//const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
+
+		//le username ne sera plus Unique
 		const user = await this.prisma.user.findUnique( { where: { username: profile.username } });
 
 		if (!user) {
@@ -32,9 +35,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 
 			const user = await this.prisma.user.create({
 				data: {
+					login: profile.username,
 					sessionId: getRandomSessionId(),
 					username: profile.username,
-					email: profile.emails[0].value,
 				},
 			});
 			console.log(' ------ user successfully created -----');
@@ -46,7 +49,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42strat') {
 			console.dir(user, { depth: null })
 
 			const updatedUser = await this.prisma.user.update({
+
 				where: { username: profile.username },
+
 				data: { sessionId: getRandomSessionId() }
 			});
 

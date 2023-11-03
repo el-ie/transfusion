@@ -25,6 +25,9 @@ function App() {
 		    	<li>
 		          <Link to="/homepage">homepage</Link>
 		    	</li>
+		    	<li>
+		          <Link to="/useless">useless</Link>
+		    	</li>
 		      </ul>
 			</nav>
 
@@ -32,16 +35,22 @@ function App() {
 			</div>
 
 			<Routes>
-			  <Route path="/useless" element={<Useless/>} />
 
 			  <Route path="/" element={<LoginForm/>} />
 			  <Route path="/login" element={<LoginForm/>} />
+
 			  <Route path="/homepage" element={
 				  <RouteProtection>
 				  <HomePage/>
 				  </RouteProtection>
 			  } />
 	
+			  <Route path="/useless" element={
+				  <RouteProtection>
+				  <Useless/>
+				  </RouteProtection>
+			  } />
+
 			</Routes>
 
 			</>

@@ -22,44 +22,51 @@ export default function LoginForm() {
 		window.location.href = 'http://localhost:3001/auth/login42';
 	};
 
-
     useEffect(() => {
+
+		console.log('Checks au seins de LoginForm :');
 
         const checkIsSigned = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/auth/check_is_signed', { withCredentials: true });
 				setIsSigned(true);
+				return true; //utile ?
             } catch (error) {
-				//console.log('checkIsSigned', error.response);
+				setIsSigned(false);
+				console.log('echec" appel de check_is_signed [LoginForm]', error.response.data);
+				throw new Error('checkIsSigned');
             }
         };
-
-        checkIsSigned();
 
         const getTwoFaActivationState = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/auth/check_2fa_activation', { withCredentials: true });
-				setTwoFaActivation(true);
+				setTwoFaActivation(true); //utile ?
             } catch (error) {
-				//console.log('getTwoFaActivationState', error.response);
+				setTwoFaActivation(false);
+				console.log('echec: appel de check_2fa_activation [LoginForm]', error.response.data);
+				throw new Error('getTwoFaActivationState');
             }
         };
-
-		getTwoFaActivationState();
 
         const getTwoFaCookieState = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/auth/check_2fa_cookie', { withCredentials: true });
 				setTwoFaCookieState(true);
             } catch (error) {
-				//console.log('getTwoFaCookieState', error.response);
+				setTwoFaCookieState(false); 
+				console.log('echec: appel de check_2fa_cookie [LoginForm]', error.response.data);
+				throw new Error('getTwoFaCookieState');
             }
         };
 
-		getTwoFaCookieState();
+		checkIsSigned()
+		.then( () => getTwoFaActivationState())
+		.then( () => getTwoFaCookieState())
+		.catch((error) => {});
 
-    });
-    //}, []);
+    }, [refreshPage]);
+	// bien laisser le , [] sinon le rechargement se fait 2 fois
 
 	async function handleLaunchTwoFa() {
 
@@ -67,8 +74,9 @@ export default function LoginForm() {
 			const response = await axios.get('http://localhost:3001/auth/2fa_getqr', { withCredentials: true });
 			setQrCode(response.data);
 		} catch (error) {
+			setQrCode('QR code error (catched)');
 			//pourquoi la requete s envoi en double en cas d erreur, visible dans le terminal web
-			console.log('get qr code fail', error.response);
+			console.log('echec: appelle de 2fa_getqr pour lancer le 2FA [LoginForm]', error.response.data);
 		}
 	}
 
@@ -82,6 +90,7 @@ export default function LoginForm() {
 		try {
 			const response = await axios.post('http://localhost:3001/auth/2fa_activate',{ twoFactorCode: twoFaSecret } ,{ withCredentials: true });
 			setTwoFaActivation(true);
+			setRefreshPage(42); //permet de relancer le useEffect pour mettre les check a jour
 		} catch (error) {
 			console.log('handleSubmit', error.response.data.message, error.response.data);
 		}
@@ -93,7 +102,7 @@ export default function LoginForm() {
 
 		try {
 			const response = await axios.post('http://localhost:3001/auth/2fa_authenticate',{ twoFactorCode: twoFaSecret } ,{ withCredentials: true });
-			setRefreshPage(42);
+			setRefreshPage(42);//permet de relancer le useEffect pour mettre les check a jour
 			// normalement si le cookie est bien envoye par la route il n y a pas besoin de faire plus
 		} catch (error) {
 			console.log('handleSubmit', error.response.data.message, error.response.data);
@@ -150,6 +159,7 @@ export default function LoginForm() {
 		{isSigned && !twoFaActivation &&
 		<button onClick={handleLaunchTwoFa} style={{ padding: '3px 20px', borderRadius: '4px', position:'relative', left:'-20px' }}> active 2FA with QR-code  </button>
 		}
+
 		{ qrCode && !twoFaActivation &&
 			<div style={{ position:'relative', left: '0px', top: '50px' }}>
 			<br />
@@ -168,7 +178,7 @@ export default function LoginForm() {
 		}
 
 		{isSigned && twoFaActivation && twoFaCookieState &&
-				<h2 style={{ position: 'absolute', right: '3%', bottom: '4%', color: 'green'  }} > 2FA Authentication successfull </h2>
+				<h2 style={{ position: 'absolute', right: '50%', bottom: '4%', color: 'green'  }} > 2FA Authentication successfull </h2>
 		}
 
 		</div>
