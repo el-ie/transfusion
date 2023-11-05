@@ -11,7 +11,7 @@ const Pong = () => {
 	//let ball = { x: 320, y: 240, radius: 10, dx: -3, dy: 0 };
 
 	//epaisseur totale du canva
-	let wwidth = 500;
+	let wwidth = 700;
 	//hauteur totale du canva
 	let hheight = 600;
 	//hauteur paddle
@@ -21,7 +21,7 @@ const Pong = () => {
 	//radius de la balle
 	let ballRadius = 10;
 	//pas mouvement paddle
-	let paddleStep = 15;
+	let paddleStep = 25;
 
 	// vitesse vertivale de la balle
 	let ballDx = -3;
@@ -30,7 +30,7 @@ const Pong = () => {
 
 	//ratio de vitesse de la balle, 3 = lent, 7 = plutot rapide
 	let minSpeedBall = 3;
-	let maxSpeedBall = 7;
+	let maxSpeedBall = 10;
 
 	//const ballRef = useRef({ x: wwidth / 2 - 100, y: hheight / 2 - 200, radius: 10, dx: ballDx, dy: ballDy });
 	const ballRef = useRef({ x: wwidth / 2, y: hheight / 2, radius: 10, dx: ballDx, dy: ballDy });
@@ -48,7 +48,6 @@ const Pong = () => {
 	//Fonction qui permet de donner un angle donne a la basse sans changer la vitesse
 	// attention se base sur un debut d'angle a l'est et non au nord !
 		const changeBallAngle = (theta) => {
-			console.log('entree change ball angle');
 			const currentDx = ballRef.current.dx;
 			const currentDy = ballRef.current.dy;
 			const currentSpeed = Math.sqrt(currentDx * currentDx + currentDy * currentDy);
@@ -163,8 +162,8 @@ const Pong = () => {
 					// PADDLE GAUCHE //
 					if (ballY - ballRadius <= leftPaddle.y + paddleHeight) //balle au dessus de la partie basse du paddle
 					if (ballY + ballRadius >= leftPaddle.y) //balle au dessous de la partie haute du paddle
-					if (ballX - ballRadius < leftPaddle.x + leftPaddle.width
-						&& ballX + ballRadius > leftPaddle.x) //balle 
+					if (ballX - ballRadius <= leftPaddle.x + leftPaddle.width
+						&& ballX + ballRadius >= leftPaddle.x) //balle 
 					{
 						//newDx = -newDx;
 						ballRef.current.dx *= -1;
@@ -190,7 +189,6 @@ const Pong = () => {
 						let angle_impact = distance_ball_paddle_Y / (leftPaddle.height / 2);
 
 						angle_impact *= 0.80; //pour ramener le maximum a 1 a la place de 1.2, plus simple 
-						console.log(angle_impact); //enfait angle_impact va jusqu a 1.2
 
 
 						//on envoi une valeur entre 0 et 80 degres ( 0 < angle_impact < 1 )
@@ -201,7 +199,20 @@ const Pong = () => {
 							else
 								changeBallAngle(toRadians(360 - (angle_impact * 70)));
 						}
+				
+						console.log('angle{', angle_impact, '}'); //enfait angle_impact va jusqu a 1.2
+
+						if (angle_impact > 0.5)
+						{
+							let ratioAcceleration = (angle_impact - 0.5) * 2; //ratioAcceleration entre 0.5 et 1;
+							//ratioAcceleration = (ratioAcceleration - 0.5) * 2; //on passe ratioAcceleration entre 0 et 1;
+							console.log('ratio[', ratioAcceleration, ']');
+							changeBallSpeed(getBallSpeed() + 0.1 + (ratioAcceleration * 0.3) ); //fine tuning
+							//on augmente systematiquement de 0.1 si l impact est > 0.5, et on augmente encore de 0 a 0.2 en plus en fonction de l angle
+						}
 						//changeBallAngle(toRadians(80));
+
+						console.log('New speed : ', getBallSpeed());
 
 					}
 
